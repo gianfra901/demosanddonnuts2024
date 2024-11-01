@@ -46,7 +46,6 @@ jobs:
         uses: hashicorp/vault-action@v3.0.0
         with:
           url: https://sample-cluster-public-vault-4bf4a18c.31328491.z1.hashicorp.cloud:8200
-          caCertificate: ${{ secrets.VAULT_CA_CERT }}
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
               secret/data/abcd filename | FILENAME 
