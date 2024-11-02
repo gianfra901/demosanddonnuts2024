@@ -42,13 +42,13 @@ jobs:
         payload=$(jq -n --arg role_id "$role_id" --arg secret_id "$secret_id" '{role_id: $role_id, secret_id: $secret_id}')
         
         # Make the API request to Vault
-        response=$(curl -s --request POST --data "$payload" --header "X-Vault-Namespace: ${{ inputs.input1 }}" --header "Content-Type: application/json" "$VAULT_ADDR/v1/auth/approle/login")
+        response=$(curl -s --request POST --data "$payload" --header "X-Vault-Namespace: ${{ inputs.input1 }}" --header "Content-Type: application/json" "${{ inputs.input2 }}/v1/auth/approle/login")
         
         # Extract the client token from the response
         VAULT_TOKEN=$(echo $response | jq -r '.auth.client_token')
         
         # Make the API request to Vault
-        response=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/kv/data/internal-certificates/demosanddonnuts.online")
+        response=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ inputs.input2 }}/v1/kv/data/internal-certificates/demosanddonnuts.online")
         
         # Extract the data from the response
         data=$(echo $response | jq -r '.data.data')
