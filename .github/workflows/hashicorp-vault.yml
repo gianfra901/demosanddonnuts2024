@@ -39,6 +39,9 @@ jobs:
           echo "ROLE_ID=6c45f644-408e-3e05-9d15-ec628ee6da08" >> $GITHUB_ENV
           echo "SECRET_ID=779da3ac-78a7-fdf7-3ae8-fa6dce8a7a77" >> $GITHUB_ENV
 
+      - name: Print environment variables
+        run: printenv
+
       - name: Create JSON payload
         run: |
           PAYLOAD=$(jq -n --arg role_id "$ROLE_ID" --arg secret_id "$SECRET_ID" '{role_id: $role_id, secret_id: $secret_id}')
@@ -57,7 +60,7 @@ jobs:
           echo "DATA=$DATA" >> $GITHUB_ENV
 
       - name: Output data
-        run: echo $DATA        
+        run: echo $DATA       
 
       - id: step1
         run: echo "fileValue=MIINASDDS...." >> $GITHUB_OUTPUT
