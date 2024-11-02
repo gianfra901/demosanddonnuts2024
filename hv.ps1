@@ -33,3 +33,4 @@ $data = $response.data
 
 # Output the data
 Write-Output $data.data.filevalue
+Write-Output $data.data.password
