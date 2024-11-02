@@ -30,8 +30,15 @@ jobs:
       shell: pwsh
       run: |
         $output = ./hv.ps1
+        echo "::save-state name=result::$output"
+        
+    - name: Decode base64 string to file
+      run: |
+        echo "${{ steps.runps.outputs.result }}" | base64 --decode > domain.pfx
 
-    - name: Display output
-      run: echo "The output value is ${{ steps.runps.outputs.result }}"
+    - name: Use the decoded file
+      run: cat domain.pfx
+    - name: Azure Login
+      uses: Azure/login@v2.2.0      
                   
           
