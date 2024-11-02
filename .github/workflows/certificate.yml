@@ -32,9 +32,6 @@ jobs:
         $output = ./hv.ps1
         echo "::set-output name=result::$output"
         
-
-    - name: Use the decoded file
-      run: cat domain.pfx
     - name: Azure CLI script
       uses: azure/cli@v2
       with:
