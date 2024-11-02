@@ -30,7 +30,6 @@ jobs:
       shell: pwsh
       run: |
         $output = ./hv.ps1
-        echo "::set-output name=result::$output"
 
     - name: Display output
       run: echo "The output value is ${{ steps.runps.outputs.result }}"
