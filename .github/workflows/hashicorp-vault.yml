@@ -59,9 +59,9 @@ jobs:
       - name: Fetch data from Vault
         run: |
           RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
-          $CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filename')
-          $CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')
-          $CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')
+          echo "$CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filevalue')"
+          echo "$CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')"
+          echo "$CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')"
           echo $CERTIFICATE_FILEVALUE
           echo $CERTIFICATE_PASSWORD
           echo $CERTIFICATE_THUMBPRINT
