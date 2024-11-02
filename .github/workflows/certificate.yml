@@ -26,7 +26,7 @@ jobs:
       run: chmod +x ./hv.ps1
 
     - name: Hashicorp Vault reusable workflow
-      uses: ./.github/workflows/hashicorp-vault.yml
+      uses: ./.github/workflows/hashicorp-vault.yml@main
       with:
         input1: 'admin'
         input2: 'https://sample-cluster-public-vault-4bf4a18c.31328491.z1.hashicorp.cloud:8200'
