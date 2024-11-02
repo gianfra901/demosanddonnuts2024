@@ -32,9 +32,6 @@ jobs:
         $output = ./hv.ps1
         echo "::set-output name=result::$output"
         
-    - name: Decode base64 string to file
-      run: |
-        echo "${{ steps.runps.outputs.result }}" | base64 --decode > domain.pfx
 
     - name: Use the decoded file
       run: cat domain.pfx
