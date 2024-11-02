@@ -19,10 +19,6 @@ $response = Invoke-RestMethod -Uri "$VAULT_ADDR/v1/auth/approle/login" -Method P
 # Extract the client token from the response
 $VAULT_TOKEN = $response.auth.client_token
 
-# Output the token (optional)
-Write-Output $VAULT_TOKEN
-
-
 # Make the API request to Vault
 $response = Invoke-RestMethod -Uri "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online" -Method Get -Headers @{
     "X-Vault-Token" = $VAULT_TOKEN
@@ -32,7 +28,7 @@ $response = Invoke-RestMethod -Uri "$VAULT_ADDR/v1/admin/app1/kv/data/internal-c
 $data = $response.data
 
 # Output the data
-Write-Output "::set-output name=filevalue::$data.data.filevalue"
-Write-Output "::set-output name=password::$data.data.password"
-Write-Output "::set-output name=thumbprint::$data.data.thumbprint"
+Write-Output "::set-output name=filevalue::${data.data.filevalue}"
+Write-Output "::set-output name=password::${data.data.password}"
+Write-Output "::set-output name=thumbprint::${data.data.thumbprint}"
 
