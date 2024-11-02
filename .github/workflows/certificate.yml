@@ -25,24 +25,18 @@ jobs:
     - name: Set execute permissions
       run: chmod +x ./hv.ps1
 
-    - name: Hashicorp Vault
-      id: runps
-      shell: pwsh
+    - name: Hashicorp Vault reusable workflow
+      uses: ./.github/workflows/hashicorp-vault.yml
+      with:
+        input1: 'admin'
+        input2: 'https://sample-cluster-public-vault-4bf4a18c.31328491.z1.hashicorp.cloud:8200'
+
+    - name: Display outputs
       run: |
-        $output = ./hv.ps1
-        echo "::set-output name=file::$output"
-        echo "::set-output name=pwd::$output"
-        echo "::set-output name=thumbprint::$output"
+        echo "Output 1: ${{ needs.call-reusable.outputs.filevalue }}"
+        echo "Output 2: ${{ needs.call-reusable.outputs.password }}"
+        echo "Output 3: ${{ needs.call-reusable.outputs.thumbprint }}"        
         
-    - name: Display filevalue
-      run: echo "The filevalue value is ${{ steps.runps.outputs.filevalue }}"
-
-    - name: Display password
-      run: echo "The password value is ${{ steps.runps.outputs.password }}"
-
-    - name: Display thumbprint
-      run: echo "The thumbprint value is ${{ steps.runps.outputs.thumbprint }}"
-
     - name: Decode base64 string to file
       run: |
         echo ${{ steps.runps.outputs.filevalue }} | base64 -d > domain.pfx
