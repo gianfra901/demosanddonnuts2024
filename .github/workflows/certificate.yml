@@ -15,20 +15,24 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  hashicorpvault:
-    # The type of runner that the job will run on
+  run-script:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Run PowerShell script
-        id: runps
-        shell: pwsh
-        run: |
-          $output = ./hv.ps1
-          echo "::set-output name=result::$output"
-  
-      - name: Display output
-        run: echo "The output value is ${{ steps.runps.outputs.result }}"
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Set execute permissions
+      run: chmod +x ./script.ps1
+
+    - name: Run PowerShell script
+      id: runps
+      shell: pwsh
+      run: |
+        $output = ./hv.ps1
+        echo "::set-output name=result::$output"
+
+    - name: Display output
+      run: echo "The output value is ${{ steps.runps.outputs.result }}"
                   
           
