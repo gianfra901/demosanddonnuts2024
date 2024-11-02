@@ -51,6 +51,6 @@ jobs:
       id: runps3
       shell: pwsh
       run: |
-        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file /domain.pfx --certificate-password ${{ secrets.HV_CERTIFICATE_PWD }}
+        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ secrets.HV_CERTIFICATE_PWD }}
                   
           
