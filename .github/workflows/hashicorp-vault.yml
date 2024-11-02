@@ -38,6 +38,9 @@ jobs:
           echo "VAULT_ADDR=https://sample-cluster-public-vault-4bf4a18c.31328491.z1.hashicorp.cloud:8200" >> $GITHUB_ENV
           echo "ROLE_ID=6c45f644-408e-3e05-9d15-ec628ee6da08" >> $GITHUB_ENV
           echo "SECRET_ID=779da3ac-78a7-fdf7-3ae8-fa6dce8a7a77" >> $GITHUB_ENV
+          echo "CERTIFICATE_FILEVALUE=0" >> $GITHUB_ENV
+          echo "CERTIFICATE_PASSWORD=0" >> $GITHUB_ENV
+          echo "CERTIFICATE_THUMBPRINT=0" >> $GITHUB_ENV
 
       - name: Print environment variables
         run: printenv
@@ -56,19 +59,19 @@ jobs:
       - name: Fetch data from Vault
         run: |
           RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
-          FILE_VALUE=$(echo $RESPONSE | jq -r '.data.data.filename')
-          PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')
-          THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')
-          echo $FILE_VALUE
-          echo $PASSWORD
-          echo $THUMBPRINT
+          $CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filename')
+          $CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')
+          $CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')
+          echo $CERTIFICATE_FILEVALUE
+          echo $CERTIFICATE_PASSWORD
+          echo $CERTIFICATE_THUMBPRINT
 
       - name: Output data
         id: step1
-        run: echo "fileValue=$FILE_VALUE" >> $GITHUB_OUTPUT
+        run: echo "fileValue=$CERTIFICATE_FILEVALUE" >> $GITHUB_OUTPUT
       - name: Output data
         id: step2
-        run: echo "password=$PASSWORD" >> $GITHUB_OUTPUT
+        run: echo "password=$CERTIFICATE_PASSWORD" >> $GITHUB_OUTPUT
       - name: Output data
         id: step3
-        run: echo "thumbprint=$THUMBPRINT" >> $GITHUB_OUTPUT                  
+        run: echo "thumbprint=$CERTIFICATE_THUMBPRINT" >> $GITHUB_OUTPUT                  
