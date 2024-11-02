@@ -34,7 +34,6 @@ jobs:
       - name: Define environment variables
         run: |
           echo "VAULT_NAMESPACE=admin" >> $GITHUB_ENV
-          echo "VAULT_NAMESPACE_APP=admin/app1" >> $GITHUB_ENV
           echo "VAULT_ADDR=https://sample-cluster-public-vault-4bf4a18c.31328491.z1.hashicorp.cloud:8200" >> $GITHUB_ENV
           echo "ROLE_ID=6c45f644-408e-3e05-9d15-ec628ee6da08" >> $GITHUB_ENV
           echo "SECRET_ID=779da3ac-78a7-fdf7-3ae8-fa6dce8a7a77" >> $GITHUB_ENV
