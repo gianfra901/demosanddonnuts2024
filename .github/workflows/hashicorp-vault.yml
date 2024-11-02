@@ -1,31 +1,26 @@
-name: Reusable Workflow
+name: Reusable workflow
 
 on:
   workflow_call:
-    inputs:
-      input1:
-        description: 'VAULT NAMESPACE'
-        required: true
-        type: string
-      input2:
-        description: 'VAULT ADDR'
-        required: true
-        type: string
+    # Map the workflow outputs to job outputs
     outputs:
-      output1:
-        description: 'First filevalue parameter'
-        value: ${{ steps.set-outputs.outputs.filevalue }}
-      output2:
-        description: 'Second password parameter'
-        value: ${{ steps.set-outputs.outputs.password }}
-      output3:
-        description: 'Third thumbprint parameter'
-        value: ${{ steps.set-outputs.outputs.thumbprint }}
+      firstword:
+        description: "The first output string"
+        value: ${{ jobs.example_job.outputs.output1 }}
+      secondword:
+        description: "The second output string"
+        value: ${{ jobs.example_job.outputs.output2 }}
 
 jobs:
-  reusable-job:
+  example_job:
+    name: Generate output
     runs-on: ubuntu-latest
-
+    # Map the job outputs to step outputs
+    outputs:
+      output1: ${{ steps.step1.outputs.firstword }}
+      output2: ${{ steps.step2.outputs.secondword }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - id: step1
+        run: echo "firstword=hello" >> $GITHUB_OUTPUT
+      - id: step2
+        run: echo "secondword=world" >> $GITHUB_OUTPUT
