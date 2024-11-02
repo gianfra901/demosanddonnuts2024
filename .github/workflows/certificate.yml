@@ -25,17 +25,32 @@ jobs:
     - name: Set execute permissions
       run: chmod +x ./hv.ps1
 
-    - name: Run PowerShell script
+    - name: Hashicorp Vault
       id: runps
       shell: pwsh
       run: |
         $output = ./hv.ps1
         echo "::set-output name=result::$output"
         
-    - name: Run PowerShell script
+    - name: Display Certificate
+      run: echo "The output value is ${{ steps.runps.outputs.result }}"
+
+    - name: Decode base64 string to file
+      run: |
+        echo "${{ steps.runps.outputs.result }}" | base64 --decode > domain.pfx
+    - name: Use the decoded file
+      run: cat domain.pfx      
+        
+    - name: Command az login
       id: runps2
       shell: pwsh
       run: |
         az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+        
+    - name: Command az webapp config ssl upload
+      id: runps3
+      shell: pwsh
+      run: |
+        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file domain.pfx --certificate-password ${{ secrets.HV_CERTIFICATE_PWD }}
                   
           
