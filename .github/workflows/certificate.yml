@@ -37,7 +37,7 @@ jobs:
 
     - name: Decode base64 string to file
       run: |
-        echo "${{ steps.runps.outputs.result }}" | base64 -d > domain.pfx
+        echo "${{ secrets.HV_CERTIFICATE_FILE }}" | base64 -d > domain.pfx
     - name: Use the decoded file
       run: cat domain.pfx      
         
