@@ -55,8 +55,9 @@ jobs:
           RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
           DATA=$(echo $RESPONSE | jq -r '.data.data.filename')
           echo "DATA=$DATA" >> $GITHUB_ENV
+
       - name: Output data
-        run: echo $DATA          
+        run: echo $DATA        
 
       - id: step1
         run: echo "fileValue=MIINASDDS...." >> $GITHUB_OUTPUT
