@@ -59,12 +59,13 @@ jobs:
           FILE_VALUE=$(echo $RESPONSE | jq -r '.data.data.filename')
           PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')
           THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')
-          echo "fileValue=$FILE_VALUE" >> $GITHUB_OUTPUT
-          echo "password=$PASSWORD" >> $GITHUB_OUTPUT
-          echo "thumbprint=$THUMBPRINT" >> $GITHUB_OUTPUT
 
       - name: Output data
-        run: |
-          echo "fileValue: $FILE_VALUE"
-          echo "password: $PASSWORD"
-          echo "thumbprint: $THUMBPRINT"
+        id: step1
+        run: echo "fileValue=$FILE_VALUE" >> $GITHUB_OUTPUT
+      - name: Output data
+        id: step2
+        run: echo "password=$PASSWORD" >> $GITHUB_OUTPUT
+      - name: Output data
+        id: step3
+        run: echo "thumbprint=$THUMBPRINT" >> $GITHUB_OUTPUT                  
