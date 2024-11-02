@@ -32,6 +32,7 @@ $response = Invoke-RestMethod -Uri "$VAULT_ADDR/v1/admin/app1/kv/data/internal-c
 $data = $response.data
 
 # Output the data
-Write-Output $data.data.filevalue
-Write-Output $data.data.password
-Write-Output $data.data.thumbprint
+Write-Output "::set-output name=filevalue::$data.data.filevalue"
+Write-Output "::set-output name=password::$data.data.password"
+Write-Output "::set-output name=thumbprint::$data.data.thumbprint"
+
