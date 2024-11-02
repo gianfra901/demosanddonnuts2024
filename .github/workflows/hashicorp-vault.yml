@@ -22,7 +22,7 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.fileValue }}
       output2: ${{ steps.step2.outputs.password }}
-      output3: ${{ steps.step2.outputs.thumbprint }}
+      output3: ${{ steps.step3.outputs.thumbprint }}
     steps:
       - id: step1
         run: echo "fileValue=MIINASDDS...." >> $GITHUB_OUTPUT
