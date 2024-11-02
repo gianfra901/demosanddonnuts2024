@@ -30,7 +30,7 @@ jobs:
       shell: pwsh
       run: |
         $output = ./hv.ps1
-        echo "::save-state name=result::$output"
+        echo "::set-output name=result::$output"
         
     - name: Decode base64 string to file
       run: |
@@ -38,7 +38,11 @@ jobs:
 
     - name: Use the decoded file
       run: cat domain.pfx
-    - name: Azure Login
-      uses: Azure/login@v2.2.0      
+    - name: Azure CLI script
+      uses: azure/cli@v2.2.0
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show   
                   
           
