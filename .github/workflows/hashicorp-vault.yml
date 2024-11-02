@@ -44,10 +44,7 @@ jobs:
 
       - name: Create JSON payload
         run: |
-          {
-            PAYLOAD=$(jq -n --arg role_id "$ROLE_ID" --arg secret_id "$SECRET_ID" '{role_id: $role_id, secret_id: $secret_id}')
-            echo "PAYLOAD=$PAYLOAD"
-          } >> $GITHUB_ENV
+          echo "PAYLOAD=$(jq -n --arg role_id "$ROLE_ID" --arg secret_id "$SECRET_ID" '{role_id: $role_id, secret_id: $secret_id}')" >> $GITHUB_ENV
 
       - name: Authenticate with Vault
         run: |
