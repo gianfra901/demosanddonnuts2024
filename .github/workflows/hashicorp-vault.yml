@@ -56,10 +56,12 @@ jobs:
       - name: Fetch data from Vault
         run: |
           RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
-          echo $RESPONSE
           FILE_VALUE=$(echo $RESPONSE | jq -r '.data.data.filename')
           PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')
           THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')
+          echo $FILE_VALUE
+          echo $PASSWORD
+          echo $THUMBPRINT
 
       - name: Output data
         id: step1
