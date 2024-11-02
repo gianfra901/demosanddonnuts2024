@@ -24,6 +24,40 @@ jobs:
       output2: ${{ steps.step2.outputs.password }}
       output3: ${{ steps.step3.outputs.thumbprint }}
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Define environment variables
+        run: |
+          echo "VAULT_NAMESPACE=admin" >> $GITHUB_ENV
+          echo "VAULT_NAMESPACE_APP=admin/app1" >> $GITHUB_ENV
+          echo "VAULT_ADDR=https://sample-cluster-public-vault-4bf4a18c.31328491.z1.hashicorp.cloud:8200" >> $GITHUB_ENV
+          echo "ROLE_ID=6c45f644-408e-3e05-9d15-ec628ee6da08" >> $GITHUB_ENV
+          echo "SECRET_ID=779da3ac-78a7-fdf7-3ae8-fa6dce8a7a77" >> $GITHUB_ENV
+
+      - name: Create JSON payload
+        run: |
+          PAYLOAD=$(jq -n --arg role_id "$ROLE_ID" --arg secret_id "$SECRET_ID" '{role_id: $role_id, secret_id: $secret_id}')
+          echo "PAYLOAD=$PAYLOAD" >> $GITHUB_ENV
+
+      - name: Authenticate with Vault
+        run: |
+          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: $VAULT_NAMESPACE" --header "Content-Type: application/json" "$VAULT_ADDR/v1/auth/approle/login")
+          VAULT_TOKEN=$(echo $RESPONSE | jq -r '.auth.client_token')
+          echo "VAULT_TOKEN=$VAULT_TOKEN" >> $GITHUB_ENV
+
+      - name: Fetch data from Vault
+        run: |
+          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
+          DATA=$(echo $RESPONSE | jq -r '.data.data.filename')
+          echo "DATA=$DATA" >> $GITHUB_ENV
+      - name: Output data
+        run: echo $DATA          
+
       - id: step1
         run: echo "fileValue=MIINASDDS...." >> $GITHUB_OUTPUT
       - id: step2
