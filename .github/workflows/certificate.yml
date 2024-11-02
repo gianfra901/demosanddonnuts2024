@@ -30,10 +30,12 @@ jobs:
       shell: pwsh
       run: |
         $output = ./hv.ps1
-        echo "::set-output name=result::$output"
+        echo "::set-output name=file::$output"
+        echo "::set-output name=pwd::$output"
+        echo "::set-output name=thumbprint::$output"
         
     - name: Display Certificate
-      run: echo "The output value is ${{ steps.runps.outputs.result }}"
+      run: echo "The output value is ${{ steps.runps.outputs.file }}"
 
     - name: Decode base64 string to file
       run: |
@@ -51,12 +53,12 @@ jobs:
       id: runps3
       shell: pwsh
       run: |
-        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ secrets.HV_CERTIFICATE_PWD }}
+        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ steps.runps.outputs.pwd }}
 
     - name: Command az webapp config ssl bind
       id: runps4
       shell: pwsh
       run: |
-        az webapp config ssl bind --resource-group RSGRDEMO --name demosanddonuts --certificate-thumbprint F4AF7E81B78DC161942A250EE1552B2B846E0484 --ssl-type SNI
+        az webapp config ssl bind --resource-group RSGRDEMO --name demosanddonuts --certificate-thumbprint ${{ steps.runps.outputs.thumbprint }} --ssl-type SNI
                   
           
