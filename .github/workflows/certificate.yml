@@ -53,7 +53,7 @@ jobs:
       id: runps3
       shell: pwsh
       run: |
-        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ steps.runps.outputs.password }}
+        az webapp config ssl upload --resource-group RSGRDEMO  --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ steps.runps.outputs.password }}
 
     - name: Command az webapp config ssl bind
       id: runps4
