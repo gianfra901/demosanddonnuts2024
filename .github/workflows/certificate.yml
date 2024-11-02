@@ -34,12 +34,18 @@ jobs:
         echo "::set-output name=pwd::$output"
         echo "::set-output name=thumbprint::$output"
         
-    - name: Display Certificate
-      run: echo "The output value is ${{ steps.runps.outputs.file }}"
+    - name: Display filevalue
+      run: echo "The filevalue value is ${{ steps.runps.outputs.filevalue }}"
+
+    - name: Display password
+      run: echo "The password value is ${{ steps.runps.outputs.password }}"
+
+    - name: Display thumbprint
+      run: echo "The thumbprint value is ${{ steps.runps.outputs.thumbprint }}"
 
     - name: Decode base64 string to file
       run: |
-        echo "${{ secrets.HV_CERTIFICATE_FILE }}" | base64 -d > domain.pfx
+        echo ${{ steps.runps.outputs.filevalue }} | base64 -d > domain.pfx
     - name: Use the decoded file
       run: cat domain.pfx      
         
@@ -53,7 +59,7 @@ jobs:
       id: runps3
       shell: pwsh
       run: |
-        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ steps.runps.outputs.pwd }}
+        az webapp config ssl upload --resource-group RSGRDEMO --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ steps.runps.outputs.password }}
 
     - name: Command az webapp config ssl bind
       id: runps4
