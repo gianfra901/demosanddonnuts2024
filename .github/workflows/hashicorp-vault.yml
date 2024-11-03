@@ -2,6 +2,11 @@ name: Hashicorp Vault workflow
 
 on:
   workflow_call:
+    inputs:
+      namespace:
+        description: 'Namespace application'
+        required: true
+        type: string
     # Map the workflow outputs to job outputs
     outputs:
       fileValue:
@@ -18,7 +23,7 @@ jobs:
   example_job:
     name: Get Certificate from Hashicorp Vault
     runs-on: ubuntu-latest
-    # Map the job outputs to step outputs
+    # Map outputs
     outputs:
       output1: ${{ steps.step1.outputs.fileValue }}
       output2: ${{ steps.step2.outputs.password }}
@@ -31,16 +36,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
-      - name: Print secrets
-        run: |
-          echo "${{ secrets.VAULT_ADDR }}" | wc -c
-          echo "${{ secrets.VAULT_ROLE_ID }}" | wc -c
-          echo "${{ secrets.VAULT_SECRET_ID }}" | wc -c    
-
-      - name: Define environment variables
-        run: |
-          echo "VAULT_NAMESPACE=admin" >> $GITHUB_ENV
-
       - name: Print environment variables
         run: printenv
 
@@ -51,7 +46,7 @@ jobs:
 
       - name: Authenticate with Vault
         run: |
-          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: $VAULT_NAMESPACE" --header "Content-Type: application/json" "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login")
+          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: ${{ inputs.namespace }}" --header "Content-Type: application/json" "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login")
           VAULT_TOKEN=$(echo $RESPONSE | jq -r '.auth.client_token')
           echo "VAULT_TOKEN=$VAULT_TOKEN" >> $GITHUB_ENV
 

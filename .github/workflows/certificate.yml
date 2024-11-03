@@ -15,6 +15,8 @@ jobs:
   job1:
     uses: ./.github/workflows/hashicorp-vault.yml
     secrets: inherit
+    with:
+      namespace: admin
 
   job2:
     runs-on: ubuntu-latest
