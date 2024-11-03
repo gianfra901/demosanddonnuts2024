@@ -1,0 +1,38 @@
+name: APP1 - Automate Implement Certificate from HV
+
+# Controls when the workflow will run
+on:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+    inputs:
+        jira-issue:
+          description: 'Ticket Jira Issue'
+          required: true
+          type: string
+        jira-state-transition:
+          description: 'Estado Destino Jira'
+          required: true
+          type: string          
+
+jobs:
+  test-transition-issue:
+    name: Transition Issue
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login
+      uses: atlassian/gajira-login@v3
+      env:
+        JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+        JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        
+
+    - name: Transition issue
+      uses: atlassian/gajira-transition@v3
+      with:
+        issue: ${{ inputs.jira-issue }}
+        transition: ${{ inputs.jira-state-transition }}
+              
+    
