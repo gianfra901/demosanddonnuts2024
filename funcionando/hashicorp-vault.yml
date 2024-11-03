@@ -1,0 +1,70 @@
+name: Hashicorp Vault workflow
+
+on:
+  workflow_call:
+    # Map the workflow inputs to job
+    inputs:
+      namespace:
+        description: 'Namespace application'
+        required: true
+        type: string
+      certificate-path-hv:
+        description: 'Path Certificate stored in HV'
+        required: true
+        type: string        
+    # Map the workflow outputs to job outputs
+    outputs:
+      fileValue:
+        description: "Certificate: FileValue base64"
+        value: ${{ jobs.example_job.outputs.output1 }}
+      password:
+        description: "Certificate: Password"
+        value: ${{ jobs.example_job.outputs.output2 }}
+      thumbprint:
+        description: "Certificate: Thumbprint"
+        value: ${{ jobs.example_job.outputs.output3 }}        
+
+jobs:
+  example_job:
+    name: Get Certificate from Hashicorp Vault
+    runs-on: ubuntu-latest
+    # Map outputs
+    outputs:
+      output1: ${{ steps.step1.outputs.fileValue }}
+      output2: ${{ steps.step2.outputs.password }}
+      output3: ${{ steps.step3.outputs.thumbprint }}
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Create JSON payload
+        run: |
+          PAYLOAD_ALT=$(echo "{\"role_id\": \"${{ secrets.VAULT_ROLE_ID }}\", \"secret_id\": \"${{ secrets.VAULT_SECRET_ID }}\"}")
+          echo "PAYLOAD=$PAYLOAD_ALT" >> $GITHUB_ENV
+
+      - name: Authenticate with Vault
+        run: |
+          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: ${{ inputs.namespace }}" --header "Content-Type: application/json" "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login")
+          VAULT_TOKEN=$(echo $RESPONSE | jq -r '.auth.client_token')
+          echo "VAULT_TOKEN=$VAULT_TOKEN" >> $GITHUB_ENV
+
+      - name: Fetch data from Vault
+        run: |
+          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ secrets.VAULT_ADDR }}/v1/admin/app1/kv/data/${{ inputs.certificate-path-hv }}")
+          echo "CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filevalue')" >> $GITHUB_ENV
+          echo "CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')" >> $GITHUB_ENV
+          echo "CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')" >> $GITHUB_ENV
+
+      - name: Output fileValue
+        id: step1
+        run: echo "fileValue=$CERTIFICATE_FILEVALUE" >> $GITHUB_OUTPUT
+      - name: Output password
+        id: step2
+        run: echo "password=$CERTIFICATE_PASSWORD" >> $GITHUB_OUTPUT
+      - name: Output thumbprint
+        id: step3
+        run: echo "thumbprint=$CERTIFICATE_THUMBPRINT" >> $GITHUB_OUTPUT                  

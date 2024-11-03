@@ -1,0 +1,48 @@
+name: Call a reusable workflow and use its outputs
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  vault:
+    uses: ./.github/workflows/hashicorp-vault.yml
+    secrets: inherit
+    with:
+      namespace: admin
+      certificate-path-hv: internal-certificates/demosanddonnuts.online
+
+  azure:
+    runs-on: ubuntu-latest
+    needs: vault
+    steps:
+    - name: Decode base64 string to file
+      run: |
+        echo ${{ needs.job1.outputs.fileValue }} | base64 -d > domain.pfx
+    - name: Use the decoded file
+      run: cat domain.pfx
+
+    - name: Command az login
+      id: runps2
+      shell: pwsh
+      run: |
+        az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+    - name: Command az webapp config ssl upload
+      id: runps3
+      shell: pwsh
+      run: |
+        az webapp config ssl upload --resource-group RSGRDEMO  --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ needs.job1.outputs.password }}        
+
+    - name: Command az webapp config ssl bind
+      id: runps4
+      shell: pwsh
+      run: |
+        az webapp config ssl bind --resource-group RSGRDEMO --name demosanddonuts  --certificate-thumbprint ${{ needs.job1.outputs.thumbprint }} --ssl-type SNI

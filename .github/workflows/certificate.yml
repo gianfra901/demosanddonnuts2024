@@ -1,4 +1,4 @@
-name: Call a reusable workflow and use its outputs
+name: Automate Implement Certificate from HV
 
 # Controls when the workflow will run
 on:
@@ -9,15 +9,35 @@ on:
   #   branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  #workflow_dispatch:
+
+    workflow_call:
+      # Map the workflow inputs to job
+      inputs:
+        hv-namespace:
+          description: 'Namespace application'
+          required: true
+          type: string
+        hv-certificate-path:
+          description: 'Path Certificate stored in HV'
+          required: true
+          type: string
+        az-resource-group-name:
+          description: 'Resource group Azure'
+          required: true
+          type: string
+        az-web-app-name:
+          description: 'Resource group Azure'
+          required: true
+          type: string                              
 
 jobs:
   vault:
     uses: ./.github/workflows/hashicorp-vault.yml
     secrets: inherit
     with:
-      namespace: admin
-      certificate-path-hv: internal-certificates/demosanddonnuts.online
+      namespace: ${{ inputs.hv-namespace }}
+      certificate-path-hv: ${{ inputs.hv-certificate-path }}
 
   azure:
     runs-on: ubuntu-latest
@@ -39,10 +59,10 @@ jobs:
       id: runps3
       shell: pwsh
       run: |
-        az webapp config ssl upload --resource-group RSGRDEMO  --name demosanddonuts --certificate-file ./domain.pfx --certificate-password ${{ needs.job1.outputs.password }}        
+        az webapp config ssl upload --resource-group ${{ inputs.az-resource-group-name }}  --name ${{ inputs.az-web-app-name }} --certificate-file ./domain.pfx --certificate-password ${{ needs.job1.outputs.password }}        
 
     - name: Command az webapp config ssl bind
       id: runps4
       shell: pwsh
       run: |
-        az webapp config ssl bind --resource-group RSGRDEMO --name demosanddonuts  --certificate-thumbprint ${{ needs.job1.outputs.thumbprint }} --ssl-type SNI
+        az webapp config ssl bind --resource-group ${{ inputs.az-resource-group-name }} --name ${{ inputs.az-web-app-name }}  --certificate-thumbprint ${{ needs.job1.outputs.thumbprint }} --ssl-type SNI
