@@ -4,7 +4,7 @@ name: APP1 - Automate Implement Certificate from HV
 on:
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  workflow_call:
 
     inputs:
         jira-issue:
