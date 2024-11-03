@@ -13,7 +13,7 @@ test('has certificate', async () => {
     console.log('Website has a valid certificate.');
 
     // Capture a screenshot
-    await page.screenshot({ path: 'screenshot.png' });
+    await page.screenshot({ path: 'screenshot.png', fullPage: true });
     console.log('Screenshot saved as screenshot.png');
   } catch (error) {
     console.error('Failed to load the website:', error);
