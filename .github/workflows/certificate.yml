@@ -1,18 +1,6 @@
 name: Automate Implement Certificate from HV
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  #workflow_dispatch:
-
     workflow_call:
-      # Map the workflow inputs to job
       inputs:
         hv-namespace:
           description: 'Namespace application'
@@ -73,6 +61,7 @@ jobs:
         az webapp config ssl bind --resource-group ${{ inputs.az-resource-group-name }} --name ${{ inputs.az-web-app-name }}  --certificate-thumbprint ${{ needs.vault.outputs.thumbprint }} --ssl-type SNI
 
   jira:
+    needs: azure
     uses: ./.github/workflows/jira.yml
     secrets: inherit
     with:

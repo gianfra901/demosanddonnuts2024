@@ -1,8 +1,6 @@
 name: Hashicorp Vault workflow
-
 on:
   workflow_call:
-    # Map the workflow inputs to job
     inputs:
       namespace:
         description: 'Namespace application'
@@ -12,7 +10,6 @@ on:
         description: 'Path Certificate stored in HV'
         required: true
         type: string        
-    # Map the workflow outputs to job outputs
     outputs:
       fileValue:
         description: "Certificate: FileValue base64"

@@ -1,9 +1,5 @@
 name: APP1 - Automate Implement Certificate from HV
-
-# Controls when the workflow will run
 on:
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_call:
 
     inputs:
@@ -34,5 +30,11 @@ jobs:
       with:
         issue: ${{ inputs.jira-issue }}
         transition: ${{ inputs.jira-state-transition }}
-              
+    - name: Add comment to Jira issue
+      uses: atlassian/gajira-comment@v3
+      with:
+        issue: ${{ inputs.jira-issue }}
+        comment: Certificado instalado satisfactoriamente.
+        
+        
     
