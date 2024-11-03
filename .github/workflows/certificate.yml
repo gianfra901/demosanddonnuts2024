@@ -77,5 +77,5 @@ jobs:
     secrets: inherit
     with:
       jira-issue: ${{ inputs.jira-issue }}
-      jira-state-transition: "Finalizada"
+      jira-state-transition: "Listo"
       
