@@ -45,6 +45,7 @@ jobs:
     steps:
     - name: Decode base64 string to file
       run: |
+        echo ${{ needs.job1.outputs.fileValue }}
         echo ${{ needs.job1.outputs.fileValue }} | base64 -d > domain.pfx
     - name: Use the decoded file
       run: cat domain.pfx
