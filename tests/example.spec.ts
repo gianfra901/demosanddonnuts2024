@@ -9,12 +9,14 @@ test('has certificate', async () => {
   const page = await context.newPage();
 
   try {
-    await page.goto('https://demosanddonnuts.online');
-    console.log('Website has a valid certificate.');
-
     // Capture a screenshot
     await page.screenshot({ path: 'screenshot.png', fullPage: true });
     console.log('Screenshot saved as screenshot.png');
+        
+    await page.goto('https://demosanddonnuts.online');
+    console.log('Website has a valid certificate.');
+
+
   } catch (error) {
     console.error('Failed to load the website:', error);
     throw new Error('Website does not have a valid certificate.');
