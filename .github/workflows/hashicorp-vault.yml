@@ -31,11 +31,13 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
+      - name: Print secrets
+        run: |
+          echo ${{ secrets.VAULT_ADDR }}
+          echo ${{ secrets.VAULT_ROLE_ID }}
+          echo ${{ secrets.VAULT_SECRET_ID }}     
+
       - name: Define environment variables
-        env:
-          VAULT_ADDR_ENV: ${{ secrets.VAULT_ADDR }}
-          VAULT_ROLE_ID_ENV: ${{ secrets.VAULT_ROLE_ID }}
-          VAULT_SECRET_ID_ENV: ${{ secrets.VAULT_SECRET_ID }}
         run: |
           echo "VAULT_NAMESPACE=admin" >> $GITHUB_ENV
           echo "VAULT_ADDR=$VAULT_ADDR_ENV" >> $GITHUB_ENV
