@@ -17,6 +17,7 @@ jobs:
     secrets: inherit
     with:
       namespace: admin
+      certificate-path-hv: internal-certificates/demosanddonnuts.online
 
   job2:
     runs-on: ubuntu-latest

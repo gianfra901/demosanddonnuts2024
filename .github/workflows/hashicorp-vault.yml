@@ -2,11 +2,16 @@ name: Hashicorp Vault workflow
 
 on:
   workflow_call:
+    # Map the workflow inputs to job
     inputs:
       namespace:
         description: 'Namespace application'
         required: true
         type: string
+      certificate-path-hv:
+        description: 'Path Certificate stored in HV'
+        required: true
+        type: string        
     # Map the workflow outputs to job outputs
     outputs:
       fileValue:
@@ -36,9 +41,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
-      - name: Print environment variables
-        run: printenv
-
       - name: Create JSON payload
         run: |
           PAYLOAD_ALT=$(echo "{\"role_id\": \"${{ secrets.VAULT_ROLE_ID }}\", \"secret_id\": \"${{ secrets.VAULT_SECRET_ID }}\"}")
@@ -52,7 +54,7 @@ jobs:
 
       - name: Fetch data from Vault
         run: |
-          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ secrets.VAULT_ADDR }}/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
+          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ secrets.VAULT_ADDR }}/v1/admin/app1/kv/data/${{ inputs.certificate-path-hv }}")
           echo "CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filevalue')" >> $GITHUB_ENV
           echo "CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')" >> $GITHUB_ENV
           echo "CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')" >> $GITHUB_ENV
