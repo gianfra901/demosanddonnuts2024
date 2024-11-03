@@ -12,16 +12,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  job1:
+  vault:
     uses: ./.github/workflows/hashicorp-vault.yml
     secrets: inherit
     with:
       namespace: admin
       certificate-path-hv: internal-certificates/demosanddonnuts.online
 
-  job2:
+  azure:
     runs-on: ubuntu-latest
-    needs: job1
+    needs: vault
     steps:
     - name: Decode base64 string to file
       run: |
