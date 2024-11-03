@@ -45,8 +45,8 @@ jobs:
     steps:
     - name: Decode base64 string to file
       run: |
-        echo ${{ needs.job1.outputs.fileValue }}
-        echo ${{ needs.job1.outputs.fileValue }} | base64 -d > domain.pfx
+        echo ${{ needs.vault.outputs.fileValue }}
+        echo ${{ needs.vault.outputs.fileValue }} | base64 -d > domain.pfx
     - name: Use the decoded file
       run: cat domain.pfx
 
@@ -60,10 +60,10 @@ jobs:
       id: runps3
       shell: pwsh
       run: |
-        az webapp config ssl upload --resource-group ${{ inputs.az-resource-group-name }}  --name ${{ inputs.az-web-app-name }} --certificate-file ./domain.pfx --certificate-password ${{ needs.job1.outputs.password }}        
+        az webapp config ssl upload --resource-group ${{ inputs.az-resource-group-name }}  --name ${{ inputs.az-web-app-name }} --certificate-file ./domain.pfx --certificate-password ${{ needs.vault.outputs.password }}        
 
     - name: Command az webapp config ssl bind
       id: runps4
       shell: pwsh
       run: |
-        az webapp config ssl bind --resource-group ${{ inputs.az-resource-group-name }} --name ${{ inputs.az-web-app-name }}  --certificate-thumbprint ${{ needs.job1.outputs.thumbprint }} --ssl-type SNI
+        az webapp config ssl bind --resource-group ${{ inputs.az-resource-group-name }} --name ${{ inputs.az-web-app-name }}  --certificate-thumbprint ${{ needs.vault.outputs.thumbprint }} --ssl-type SNI
