@@ -40,16 +40,13 @@ jobs:
       - name: Define environment variables
         run: |
           echo "VAULT_NAMESPACE=admin" >> $GITHUB_ENV
-          echo "VAULT_ADDR=$VAULT_ADDR_ENV" >> $GITHUB_ENV
-          echo "VAULT_ROLE_ID=$VAULT_ROLE_ID_ENV" >> $GITHUB_ENV
-          echo "VAULT_SECRET_ID=$VAULT_SECRET_ID_ENV" >> $GITHUB_ENV
 
       - name: Print environment variables
         run: printenv
 
       - name: Create JSON payload
         run: |
-          PAYLOAD_ALT=$(echo "{\"role_id\": \"$VAULT_ROLE_ID\", \"secret_id\": \"$VAULT_SECRET_ID\"}")
+          PAYLOAD_ALT=$(echo "{\"role_id\": \"${{ secrets.VAULT_ROLE_ID }}\", \"secret_id\": \"${{ secrets.VAULT_SECRET_ID }}\"}")
           echo "PAYLOAD=$PAYLOAD_ALT" >> $GITHUB_ENV
 
       - name: Authenticate with Vault
@@ -60,7 +57,7 @@ jobs:
 
       - name: Fetch data from Vault
         run: |
-          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
+          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ secrets.VAULT_ADDR }}/v1/admin/app1/kv/data/internal-certificates/demosanddonnuts.online")
           echo "CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filevalue')" >> $GITHUB_ENV
           echo "CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')" >> $GITHUB_ENV
           echo "CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')" >> $GITHUB_ENV
