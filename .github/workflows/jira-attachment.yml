@@ -1,0 +1,32 @@
+name: Generate Screenshot and Upload to Jira
+
+on:
+    workflow_call:
+        inputs:
+            jira-issue:
+              description: 'Ticket Jira Issue'
+              required: true
+              type: string
+
+jobs:
+  generate-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version: lts/*
+        - name: Install dependencies
+          run: npm ci
+        - name: Install Playwright Browsers
+          run: npx playwright install --with-deps
+        - name: Run Playwright tests
+          run: npx playwright test
+
+        - name: Upload attachment to Jira
+          run: |
+            curl -D- -u ${{ secrets.JIRA_USER_EMAIL }}:${{ secrets.JIRA_API_TOKEN }} \
+            -X POST \
+            -H "X-Atlassian-Token: no-check" \
+            -F "file=@screenshot.png" \
+            ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue/${{ inputs.jira-issue }}/attachments
