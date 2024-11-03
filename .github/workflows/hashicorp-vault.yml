@@ -51,7 +51,7 @@ jobs:
 
       - name: Authenticate with Vault
         run: |
-          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: $VAULT_NAMESPACE" --header "Content-Type: application/json" "$VAULT_ADDR/v1/auth/approle/login")
+          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: $VAULT_NAMESPACE" --header "Content-Type: application/json" "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login")
           VAULT_TOKEN=$(echo $RESPONSE | jq -r '.auth.client_token')
           echo "VAULT_TOKEN=$VAULT_TOKEN" >> $GITHUB_ENV
 
