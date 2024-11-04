@@ -26,11 +26,16 @@ jobs:
             npx playwright install --with-deps
         - name: Run Playwright tests
           run: npx playwright test ./tests/example.spec.ts
+        - name: Upload screenshot
+          uses: actions/upload-artifact@v4
+          with:
+            name: screenshot
+            path: screenshot.png          
 
         - name: Upload attachment to Jira
           run: |
             curl -D- -u ${{ secrets.JIRA_USER_EMAIL }}:${{ secrets.JIRA_API_TOKEN }} \
             -X POST \
             -H "X-Atlassian-Token: no-check" \
-            -F "file=@./screenshot.png" \
+            -F "file=@screenshot.png" \
             ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue/${{ inputs.jira-issue }}/attachments
