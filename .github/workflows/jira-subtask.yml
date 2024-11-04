@@ -34,7 +34,7 @@ jobs:
         ISSUE_SUMMARY: ${{ inputs.jira-summary }}
 
       run: |
-        curl -D- -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
+        response=$(curl -D- -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
           "fields": {
             "project": {
               "key": "'"$PROJECT_KEY"'"
@@ -48,4 +48,12 @@ jobs:
               "key": "'"$PARENT_ISSUE_KEY"'"
             }
           }
-        }' -H "Content-Type: application/json" $JIRA_BASE_URL/rest/api/2/issue        
+        }' -H "Content-Type: application/json" $JIRA_BASE_URL/rest/api/2/issue)
+
+        issue_key=$(echo $response | jq -r '.key')
+
+        curl -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
+          "transition": {
+            "id": "10000"
+          }
+        }' -H "Content-Type: application/json" $JIRA_BASE_URL/rest/api/2/issue/$issue_key/transitions        
