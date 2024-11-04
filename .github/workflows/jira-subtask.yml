@@ -50,6 +50,14 @@ jobs:
           }
         }' -H "Content-Type: application/json" $JIRA_BASE_URL/rest/api/2/issue)
 
+        echo "Response: $response"
+
         issue_key=$(echo $response | jq -r '.key')
-        echo $issue_key
-             
+        
+        echo "Issue Key: $issue_key"
+        
+        curl -D- -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
+          "transition": {
+            "id": "10002"
+          }
+        }' -H "Content-Type: application/json" $JIRA_BASE_URL/rest/api/2/issue/$issue_key/transitions        
