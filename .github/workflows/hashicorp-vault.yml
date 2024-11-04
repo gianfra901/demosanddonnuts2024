@@ -74,6 +74,7 @@ jobs:
         id: step3
         run: echo "thumbprint=$CERTIFICATE_THUMBPRINT" >> $GITHUB_OUTPUT
   jira-create-subtask:
+    needs: example_job
     uses: ./.github/workflows/jira-subtask.yml
     secrets: inherit
     with:
