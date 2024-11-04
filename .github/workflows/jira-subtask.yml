@@ -25,7 +25,7 @@ jobs:
         JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-        PROJECT_KEY: "10000"
+        PROJECT_KEY: "KAN"
         PARENT_ISSUE_KEY: ${{ inputs.jira-issue }}
         ISSUE_SUMMARY: ${{ inputs.jira-summary }}
 
