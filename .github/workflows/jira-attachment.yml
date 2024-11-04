@@ -32,5 +32,5 @@ jobs:
             curl -D- -u ${{ secrets.JIRA_USER_EMAIL }}:${{ secrets.JIRA_API_TOKEN }} \
             -X POST \
             -H "X-Atlassian-Token: no-check" \
-            -F "file=@screenshot.png" \
+            -F "file=@./screenshot.png" \
             ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue/${{ inputs.jira-issue }}/attachments
