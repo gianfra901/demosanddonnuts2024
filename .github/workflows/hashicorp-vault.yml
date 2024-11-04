@@ -2,14 +2,22 @@ name: Hashicorp Vault workflow
 on:
   workflow_call:
     inputs:
-      namespace:
+      hv-namespace:
         description: 'Namespace application'
         required: true
         type: string
-      certificate-path-hv:
+      hv-certificate-path:
         description: 'Path Certificate stored in HV'
         required: true
-        type: string        
+        type: string
+      jira-project-id:
+          description: 'Jira Project'
+          required: true
+          type: string                        
+      jira-issue:
+        description: 'Ticket Jira Issue'
+        required: true
+        type: string              
     outputs:
       fileValue:
         description: "Certificate: FileValue base64"
@@ -45,13 +53,13 @@ jobs:
 
       - name: Authenticate with Vault
         run: |
-          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: ${{ inputs.namespace }}" --header "Content-Type: application/json" "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login")
+          RESPONSE=$(curl -s --request POST --data "$PAYLOAD" --header "X-Vault-Namespace: ${{ inputs.hv-namespace }}" --header "Content-Type: application/json" "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login")
           VAULT_TOKEN=$(echo $RESPONSE | jq -r '.auth.client_token')
           echo "VAULT_TOKEN=$VAULT_TOKEN" >> $GITHUB_ENV
 
       - name: Fetch data from Vault
         run: |
-          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ secrets.VAULT_ADDR }}/v1/admin/app1/kv/data/${{ inputs.certificate-path-hv }}")
+          RESPONSE=$(curl -s --request GET --header "X-Vault-Token: $VAULT_TOKEN" "${{ secrets.VAULT_ADDR }}/v1/admin/app1/kv/data/${{ inputs.hv-certificate-path }}")
           echo "CERTIFICATE_FILEVALUE=$(echo $RESPONSE | jq -r '.data.data.filevalue')" >> $GITHUB_ENV
           echo "CERTIFICATE_PASSWORD=$(echo $RESPONSE | jq -r '.data.data.password')" >> $GITHUB_ENV
           echo "CERTIFICATE_THUMBPRINT=$(echo $RESPONSE | jq -r '.data.data.thumbprint')" >> $GITHUB_ENV
@@ -64,4 +72,11 @@ jobs:
         run: echo "password=$CERTIFICATE_PASSWORD" >> $GITHUB_OUTPUT
       - name: Output thumbprint
         id: step3
-        run: echo "thumbprint=$CERTIFICATE_THUMBPRINT" >> $GITHUB_OUTPUT                  
+        run: echo "thumbprint=$CERTIFICATE_THUMBPRINT" >> $GITHUB_OUTPUT
+  jira-create-subtask:
+    uses: ./.github/workflows/jira-subtask.yml
+    secrets: inherit
+    with:
+      jira-project-id: ${{ inputs.jira-project-id }}
+      jira-issue: ${{ inputs.jira-issue }}
+      jira-summary: "[PASPROD] - Obtención Certificado Digital desde HV"               

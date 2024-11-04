@@ -3,6 +3,10 @@ name: Generate Screenshot and Upload to Jira
 on:
     workflow_call:
         inputs:
+            jira-project-id:
+                description: 'Jira Project'
+                required: true
+                type: string            
             jira-issue:
               description: 'Ticket Jira Issue'
               required: true
@@ -44,5 +48,6 @@ jobs:
     uses: ./.github/workflows/jira-subtask.yml
     secrets: inherit
     with:
+      jira-project-id: ${{ inputs.jira-project-id }}
       jira-issue: ${{ inputs.jira-issue }}
       jira-summary: "[PASPROD] - Implementación de certificado"          

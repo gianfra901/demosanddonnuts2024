@@ -3,6 +3,10 @@ name: Create Jira Subtask
 on:
     workflow_call:
         inputs:
+            jira-project-id:
+                description: 'Jira Project'
+                required: true
+                type: string            
             jira-issue:
                 description: 'Ticket Jira Issue'
                 required: true
@@ -25,7 +29,7 @@ jobs:
         JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-        PROJECT_KEY: "KAN"
+        PROJECT_KEY: ${{ inputs.jira-project-id }}
         PARENT_ISSUE_KEY: ${{ inputs.jira-issue }}
         ISSUE_SUMMARY: ${{ inputs.jira-summary }}
 
