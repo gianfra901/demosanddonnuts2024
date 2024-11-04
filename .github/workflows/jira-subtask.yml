@@ -34,11 +34,6 @@ jobs:
         ISSUE_SUMMARY: ${{ inputs.jira-summary }}
 
       run: |
-        curl --request GET \
-          --url "$JIRA_BASE_URL/rest/api/2/issue/KAN-22/transitions" \
-          --user "$JIRA_USER_EMAIL:$JIRA_API_TOKEN" \
-          --header "Accept: application/json"
-
         response=$(curl -s -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
           "fields": {
             "project": {
@@ -55,9 +50,6 @@ jobs:
           }
         }' -H "Content-Type: application/json" $JIRA_BASE_URL/rest/api/2/issue)
 
-        echo "Response: $response"
-
-        
         if echo "$response" | jq empty; then
             echo "Valid JSON response"
         else
