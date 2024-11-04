@@ -34,7 +34,7 @@ jobs:
         ISSUE_SUMMARY: ${{ inputs.jira-summary }}
 
       run: |
-        response=$(curl -D- -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
+        response=$(curl -s -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
           "fields": {
             "project": {
               "key": "'"$PROJECT_KEY"'"
@@ -52,11 +52,19 @@ jobs:
 
         echo "Response: $response"
 
+        
+        if echo "$response" | jq empty; then
+            echo "Valid JSON response"
+        else
+            echo "Invalid JSON response"
+            exit 1
+        fi        
+
         issue_key=$(echo $response | jq -r '.key')
         
         echo "Issue Key: $issue_key"
-        
-        curl -D- -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
+
+        curl -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN -X POST --data '{
           "transition": {
             "id": "10002"
           }
