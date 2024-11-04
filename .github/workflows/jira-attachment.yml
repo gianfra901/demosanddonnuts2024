@@ -39,3 +39,10 @@ jobs:
             -H "X-Atlassian-Token: no-check" \
             -F "file=@screenshot.png" \
             ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue/${{ inputs.jira-issue }}/attachments
+
+  jira-create-subtask:
+    # needs: jira
+    uses: ./.github/workflows/jira-subtask.yml
+    secrets: inherit
+    with:
+      jira-issue: ${{ inputs.jira-issue }}               
