@@ -18,7 +18,7 @@ jobs:
     - name: Copy files
       run: |
         mkdir copied-files
-        cp -R * copied-files/
+        cp -R /* copied-files/
 
     - name: Checkout target repository
       uses: actions/checkout@v4
