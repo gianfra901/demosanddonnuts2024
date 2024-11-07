@@ -20,6 +20,13 @@ jobs:
       run: |
         rsync -av --progress . ../temp-dir --exclude .git --exclude ../temp-dir
 
+    - name: Checkout target repository
+      uses: actions/checkout@v4
+      with:
+        repository: gianfra901/app1-application
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        ref: main  # Cambia esto a la rama que prefieras
+
     - name: Create new branch
       run: |
         git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
