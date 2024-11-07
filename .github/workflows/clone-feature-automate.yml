@@ -36,6 +36,7 @@ jobs:
           cp -rf ./* ../${{ github.event.client_payload.gh-repository-name }}
           cd ..
           cd ${{ github.event.client_payload.gh-repository-name }}
+          mv github .github
           git add .
           git commit -m 'Load template automation'
           git push origin feature/${{ github.event.client_payload.jira-issue-id }}
