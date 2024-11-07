@@ -24,6 +24,8 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
+          rm -rf ./*
           git push origin feature/${{ github.event.client_payload.jira-issue-id }}
+
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
