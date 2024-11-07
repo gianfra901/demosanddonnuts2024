@@ -29,21 +29,24 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
           sleep 5
-          ls
+          
           rm -rf ./*
           rm -rf .github
-          ls
+          
           cd ..
           cd automate-templates
           cp -rf ./* ../${{ github.event.client_payload.gh-repository-name }}
           cd ..
           cd ${{ github.event.client_payload.gh-repository-name }}
-          ls
+          
           mv github .github
-          ls
-          git add .
-          git commit -m 'Load template automation'
-          git push origin feature/${{ github.event.client_payload.jira-issue-id }}
-
+          
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+
+      - name: Update README.md title
+        run: |
+          sed -i '1s/.*/# Automatización de certificados digitales ${{ github.event.client_payload.jira-issue-id }} /' README.md
+          git add .
+          git commit -m "Load template automation"
+          git push origin feature/${{ github.event.client_payload.jira-issue-id }}          
