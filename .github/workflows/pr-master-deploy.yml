@@ -81,13 +81,13 @@ jobs:
   
       - name: Checkout PR branch
         run: |
-          cd app1-application
-          git checkout origin/pull/17/head
+          ls
+          git checkout origin/pull/18/head
   
       - name: Create temporary merge branch
         run: |
           git checkout -b feature/KAN-45 origin/main
-          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/17/head
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/18/head
   
       - name: Force push to main
         env:
