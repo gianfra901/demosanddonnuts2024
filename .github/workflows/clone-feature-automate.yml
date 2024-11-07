@@ -27,7 +27,7 @@ jobs:
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
           sleep 5
           rm -rf ./*
-          rm -rf .github
+          
           cd ..
           cd automate-templates
           cp -rf ./* ../${{ github.event.client_payload.gh-repository-name }}
