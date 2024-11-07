@@ -30,7 +30,7 @@ jobs:
 
     - name: Copy files to target repository
       run: |
-        cp -r temp-dir/* .
+        rsync -Rr temp-dir/* .
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
         git add .
