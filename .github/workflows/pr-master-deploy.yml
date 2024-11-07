@@ -17,6 +17,7 @@ jobs:
       - name: Delete all files except .git
         run: |
           cd app1-application
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           ls -a
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
