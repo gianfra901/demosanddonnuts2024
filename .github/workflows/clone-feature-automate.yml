@@ -22,7 +22,7 @@ jobs:
           git clone https://github.com/gianfra901/app1-application.git
           cd app1-application
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/gianfra901/app1-application.git feature/${{ github.event.client_payload.jira-issue-id }} origin
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/gianfra901/app1-application.git feature/${{ github.event.client_payload.jira-issue-id }}
 
       - name: Push to destination repository
         env:
