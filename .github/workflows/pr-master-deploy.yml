@@ -18,25 +18,25 @@ jobs:
           token: ${{ secrets.GH_TOKEN_USER }}
           path: ${{ github.event.client_payload.gh-repository-name }}
 
-      - name: Delete all files except .git
-        run: |
-          cd ${{ github.event.client_payload.gh-repository-name }}
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          ls -a
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+      # - name: Delete all files except .git
+      #   run: |
+      #     cd ${{ github.event.client_payload.gh-repository-name }}
+      #     find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+      #     ls -a
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
-      - name: Commit changes Delete Main
-        run: |
-          cd ${{ github.event.client_payload.gh-repository-name }}
-          ls -a
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .
-          git commit -m "Delete all files in main"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+      # - name: Commit changes Delete Main
+      #   run: |
+      #     cd ${{ github.event.client_payload.gh-repository-name }}
+      #     ls -a
+      #     git config --global user.name 'github-actions[bot]'
+      #     git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      #     git add .
+      #     git commit -m "Delete all files in main"
+      #     git push origin main
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
 
       - name: Create Pull Request
