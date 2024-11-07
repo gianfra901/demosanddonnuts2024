@@ -85,6 +85,8 @@ jobs:
   
       - name: Create temporary merge branch
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"         
           git checkout -b feature/KAN-45 origin/main
           git merge --allow-unrelated-histories --strategy-option theirs origin/pull/24/head
   
