@@ -1,42 +1,25 @@
-name: Copy Files Template to Ticket Branch
+name: Copy Branch to Another Repo
 
 on:
     repository_dispatch:
       types: [branch-copy-event] 
 
 jobs:
-  copy-files:
+  copy-branch:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source repository
-      uses: actions/checkout@v4
-      with:
-        repository: gianfra901/automate-templates
-        ref: feature/certificate-app-services
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          repository: gianfra901/automate-templates
+          ref: feature/certificate-app-services
 
-    - name: Copy files
-      run: |
-        mkdir copied-files
-        shopt -s extglob
-        cp -R !(copied-files) copied-files/  # Excluye la carpeta 'copied-files'
-
-    - name: Checkout target repository
-      uses: actions/checkout@v4
-      with:
-        repository: gianfra901/app1-application
-        token: ${{ secrets.GITHUB_TOKEN }}
-        ref: master  # Usamos 'main' temporalmente para crear la nueva rama
-
-    - name: Create new branch
-      run: |
-        git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
-
-    - name: Copy files to target repository
-      run: |
-        cp -R copied-files/* .
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
-        git add .
-        git commit -m 'Copy files from automate-templates:feature/certificate-app-services'
-        git push origin feature/${{ github.event.client_payload.jira-issue-id }}
+      - name: Push to destination repository
+        env:
+          DESTINATION_REPO: https://github.com/gianfra901/app1-application.git
+          DESTINATION_BRANCH: feature/${{ github.event.client_payload.jira-issue-id }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote add destino $DESTINATION_REPO
+          git push destino $DESTINATION_BRANCH
