@@ -85,16 +85,16 @@ jobs:
       - name: Checkout PR branch
         run: |
           ls
-          git checkout origin/pull/20/head
+          git checkout origin/pull/21/head
   
       - name: Create temporary merge branch
         run: |
           git checkout -b feature/KAN-45 origin/main
-          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/20/head
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/21/head
   
       - name: Force push to main
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git push https://$GITHUB_TOKEN@github.com/gianfra901/app1-application feature/KAN-45:main --force        
 
