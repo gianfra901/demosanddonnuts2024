@@ -18,7 +18,7 @@ jobs:
     - name: Copy files
       run: |
         mkdir copied-files
-        cp -R path/to/files/* copied-files/  # Cambia 'path/to/files/' por la ruta de los archivos que quieres copiar
+        cp -R /* copied-files/  # Cambia 'path/to/files/' por la ruta de los archivos que quieres copiar
 
     - name: Checkout target repository
       uses: actions/checkout@v4
