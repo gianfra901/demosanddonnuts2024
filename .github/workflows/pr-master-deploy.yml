@@ -63,14 +63,14 @@ jobs:
         run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pull/*/head
       
       - name: Checkout PR branch
-        run: git checkout origin/pull/11/head
+        run: git checkout origin/pull/12/head
 
       - name: Force merge PR to main
         run: |
             git checkout main
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"            
-            git merge --allow-unrelated-histories --strategy-option theirs origin/pull/11/head
+            git merge --allow-unrelated-histories --strategy-option theirs origin/pull/12/head
             git push origin main
           
     #   - name: Force Merge Branch
