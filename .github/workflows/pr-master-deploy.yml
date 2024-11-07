@@ -14,11 +14,11 @@ jobs:
           token: ${{ secrets.GH_TOKEN_USER }}
           path: app1-application
 
-      - name: Delete all files
+      - name: Delete all files except .git
         run: |
-          rm -rf ./*
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
       - name: Commit changes
         run: |
@@ -28,4 +28,4 @@ jobs:
           git commit -m "Delete all files in master"
           git push origin master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
