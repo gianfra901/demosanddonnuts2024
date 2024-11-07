@@ -66,32 +66,59 @@ jobs:
         run: git checkout origin/pull/14/head
 
 
-      - name: Force merge PR to main
+
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+  
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+  
+      - name: Fetch all branches
+        run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pull/*/head
+  
+      - name: Checkout PR branch
+        run: git checkout origin/pull/16/head
+  
+      - name: Create temporary merge branch
+        run: |
+          git checkout -b feature/KAN-45 origin/main
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/16/head
+  
+      - name: Force push to main
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
-          REPO_OWNER: gianfra901
-          REPO_NAME: app1-application
-          PR_NUMBER: 15
         run: |
-          # Obtener la información del PR
-          pr_data=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")
+          git push https://$GITHUB_TOKEN@github.com/gianfra901/app1-application KAN-45:main --force        
+
+    #   - name: Force merge PR to main
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+    #       REPO_OWNER: gianfra901
+    #       REPO_NAME: app1-application
+    #       PR_NUMBER: 15
+    #     run: |
+    #       # Obtener la información del PR
+    #       pr_data=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+    #         "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")
   
-          # Obtener la rama de la cabeza del PR
-          head_branch=$(echo "$pr_data" | jq -r .head.ref)
+    #       # Obtener la rama de la cabeza del PR
+    #       head_branch=$(echo "$pr_data" | jq -r .head.ref)
   
-          # Realizar el merge
-          merge_response=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
-            -d "{\"base\":\"main\",\"head\":\"$head_branch\",\"commit_message\":\"Force merge PR #$PR_NUMBER to main\"}" \
-            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/merges")
+    #       # Realizar el merge
+    #       merge_response=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+    #         -d "{\"base\":\"main\",\"head\":\"$head_branch\",\"commit_message\":\"Force merge PR #$PR_NUMBER to main\"}" \
+    #         "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/merges")
   
-          # Verificar el resultado del merge
-          if echo "$merge_response" | grep -q '"sha":'; then
-            echo "Successfully merged PR #$PR_NUMBER to main."
-          else
-            echo "Failed to merge PR #$PR_NUMBER. Response: $merge_response"
-            exit 1
-          fi        
+    #       # Verificar el resultado del merge
+    #       if echo "$merge_response" | grep -q '"sha":'; then
+    #         echo "Successfully merged PR #$PR_NUMBER to main."
+    #       else
+    #         echo "Failed to merge PR #$PR_NUMBER. Response: $merge_response"
+    #         exit 1
+    #       fi        
 
     #   - name: Force merge PR to main
     #     run: |
