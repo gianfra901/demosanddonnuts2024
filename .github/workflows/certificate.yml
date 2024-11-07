@@ -27,7 +27,7 @@ on:
           required: true
           type: string                               
 
-jobs:
+jobs:     
   vault:
     uses: ./.github/workflows/hashicorp-vault.yml
     secrets: inherit

@@ -1,0 +1,37 @@
+name: Copy Template to Ticket Branch
+
+on:
+    repository_dispatch:
+      types: [branch-copy-event] 
+
+jobs:
+  copy-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source repository
+      uses: actions/checkout@v4
+      with:
+        repository: gianfra901/automate-templates
+        ref: feature/certificate-app-services  # Cambia 'main' por la rama de origen
+
+    - name: Copy files
+      run: |
+        mkdir copied-files
+        cp -R path/to/files/* copied-files/  # Cambia 'path/to/files/' por la ruta de los archivos que quieres copiar
+
+    - name: Checkout target repository
+      uses: actions/checkout@v4
+      with:
+        repository: gianfra901/app1-application
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: feature/${{ github.event.client_payload.jira-issue-id }}  # Cambia 'main' por la rama de destino
+
+    - name: Copy files to target repository
+      run: |
+        cp -R copied-files/* .
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add .
+        git commit -m 'Copy files from source repository'
+        git push origin feature/${{ github.event.client_payload.jira-issue-id }}  # Cambia 'main' por la rama de destino
