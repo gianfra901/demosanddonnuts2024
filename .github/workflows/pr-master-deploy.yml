@@ -38,7 +38,7 @@ jobs:
       - name: Create Pull Request
         run: |
           curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/gianfra901/app1-application/pulls \
             -d '{
@@ -48,11 +48,11 @@ jobs:
               "body": "This pull request contains automated changes."
             }'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}    
 
       - name: Merge Branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
