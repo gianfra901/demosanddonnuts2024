@@ -1,0 +1,31 @@
+name: Delete Files in Master
+
+on:
+    workflow_dispatch:
+
+jobs:
+  delete-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          repository: 'gianfra901/app1-application'
+          token: ${{ secrets.GH_TOKEN_USER }}
+          path: app1-application
+
+      - name: Delete all files
+        run: |
+          rm -rf ./*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Delete all files in master"
+          git push origin master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
