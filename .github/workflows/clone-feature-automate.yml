@@ -40,13 +40,11 @@ jobs:
           cd ${{ github.event.client_payload.gh-repository-name }}
           
           mv github .github
-          
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
-      - name: Update README.md title
-        run: |
           sed -i '1s/.*/# Automatización de certificados digitales ${{ github.event.client_payload.jira-issue-id }} /' README.md
           git add .
           git commit -m "Load template automation"
-          git push origin feature/${{ github.event.client_payload.jira-issue-id }}          
+          git push origin feature/${{ github.event.client_payload.jira-issue-id }}             
+          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
