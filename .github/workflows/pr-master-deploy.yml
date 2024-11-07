@@ -51,15 +51,35 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}    
 
 
-      - name: Force Merge Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            repository: gianfra901/app1-application
+            ref: main
+
+      - name: Fetch all branches
+        run: git fetch --all
+
+      - name: Checkout PR branch
+        run: git checkout origin/pull/8/head
+
+      - name: Force merge PR to main
         run: |
-          curl -X PUT \
-            -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"base":"'main'","head":"'feature/KAN-45'","commit_message":"Force merge from feature/KAN-45 to MAIN"}' \
-            https://api.github.com/repos/gianfra901/app1-application/merges          
+            git checkout main
+            git merge --strategy-option theirs origin/pull/8/head
+            git push origin main
+          
+    #   - name: Force Merge Branch
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+    #     run: |
+    #       curl -X PUT \
+    #         -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
+    #         -H "Accept: application/vnd.github.v3+json" \
+    #         -d '{"base":"'main'","head":"'feature/KAN-45'","commit_message":"Force merge from feature/KAN-45 to MAIN"}' \
+    #         https://api.github.com/repos/gianfra901/app1-application/merges          
 
     #   - name: Merge Branch
     #     env:
