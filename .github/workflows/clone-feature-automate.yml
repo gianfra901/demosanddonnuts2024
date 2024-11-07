@@ -24,18 +24,18 @@ jobs:
       run: |
         git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
 
-    - name: Checkout target repository
-      uses: actions/checkout@v4
-      with:
-        repository: gianfra901/app1-application
-        token: ${{ secrets.GITHUB_TOKEN }}
-        ref: feature/${{ github.event.client_payload.jira-issue-id }}
+    # - name: Checkout target repository
+    #   uses: actions/checkout@v4
+    #   with:
+    #     repository: gianfra901/app1-application
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     ref: feature/${{ github.event.client_payload.jira-issue-id }}
 
-    - name: Copy files to target repository
-      run: |
-        rsync -av --progress ../temp-dir/ .
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
-        git add .
-        git commit -m "Copy files from source repository"
-        git push origin feature/${{ github.event.client_payload.jira-issue-id }}
+    # - name: Copy files to target repository
+    #   run: |
+    #     rsync -av --progress ../temp-dir/ .
+    #     git config --global user.name 'github-actions'
+    #     git config --global user.email 'github-actions@github.com'
+    #     git add .
+    #     git commit -m "Copy files from source repository"
+    #     git push origin feature/${{ github.event.client_payload.jira-issue-id }}
