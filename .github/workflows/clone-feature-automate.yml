@@ -18,19 +18,18 @@ jobs:
 
     - name: Copy files
       run: |
-        mkdir temp-dir
-        rsync -Rr * temp-dir/
+        rsync -av --progress . ../temp-dir --exclude .git --exclude ../temp-dir
 
     - name: Checkout target repository
       uses: actions/checkout@v4
       with:
         repository: gianfra901/app1-application
         token: ${{ secrets.GITHUB_TOKEN }}
-        ref: main  # Cambia esto a la rama que prefieras
+        ref: feature/KAN-43  # Cambia esto a la rama que prefieras
 
     - name: Copy files to target repository
       run: |
-        rsync -Rr temp-dir/* .
+        rsync -av --progress ../temp-dir/ .
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
         git add .
