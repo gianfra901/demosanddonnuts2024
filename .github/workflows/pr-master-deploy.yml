@@ -59,7 +59,7 @@ jobs:
             -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{"base":"'main'","head":"'feature/KAN-45'","commit_message":"Force merge from feature/KAN-45 to MAIN"}' \
-            https://api.github.com/repos/app1-application/merges          
+            https://api.github.com/gianfra901/repos/app1-application/merges          
 
     #   - name: Merge Branch
     #     env:
