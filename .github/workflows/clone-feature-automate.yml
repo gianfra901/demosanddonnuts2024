@@ -11,6 +11,17 @@ jobs:
       - name: Checkout this repository
         uses: actions/checkout@v4
 
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+            repository: gianfra901/automate-templates
+            ref: feature/certificate-app-services
+    
+      - name: Copy files
+        run: |
+            rsync -av --progress . ../temp-dir --exclude .git --exclude ../temp-dir          
+
+
       - name: Checkout target repository
         uses: actions/checkout@v4
         with:
@@ -25,9 +36,11 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
           rm -rf ./*
+          rsync -av --progress ../temp-dir/ .
           git add .
           git commit -m 'clean files'
           git push origin feature/${{ github.event.client_payload.jira-issue-id }}
 
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}            
+      
