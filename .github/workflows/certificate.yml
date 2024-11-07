@@ -2,6 +2,10 @@ name: Automate Implement Certificate from HV
 on:
     workflow_call:
       inputs:
+        jira-issue:
+          description: 'Ticket Jira Issue'
+          required: true
+          type: string        
         hv-namespace:
           description: 'Namespace application'
           required: true
@@ -22,10 +26,7 @@ on:
             description: 'Jira Project'
             required: true
             type: string                        
-        jira-issue:
-          description: 'Ticket Jira Issue'
-          required: true
-          type: string                               
+                              
 
 jobs:     
   vault:
