@@ -1,7 +1,8 @@
 name: Delete Files in Master
 
 on:
-    workflow_dispatch:
+    repository_dispatch:
+      types: [pr-master-to-deploy-event] 
 
 permissions:
   contents: write
@@ -13,13 +14,13 @@ jobs:
       - name: Checkout master branch
         uses: actions/checkout@v4
         with:
-          repository: 'gianfra901/app1-application'
+          repository: 'gianfra901/${{ github.event.client_payload.gh-repository-name }}'
           token: ${{ secrets.GH_TOKEN_USER }}
-          path: app1-application
+          path: ${{ github.event.client_payload.gh-repository-name }}
 
       - name: Delete all files except .git
         run: |
-          cd app1-application
+          cd ${{ github.event.client_payload.gh-repository-name }}
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           ls -a
         env:
@@ -27,7 +28,7 @@ jobs:
 
       - name: Commit changes Delete Main
         run: |
-          cd app1-application
+          cd ${{ github.event.client_payload.gh-repository-name }}
           ls -a
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -44,10 +45,10 @@ jobs:
             response=$(curl -s -X POST \
               -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
               -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/gianfra901/app1-application/pulls \
+              https://api.github.com/repos/gianfra901/${{ github.event.client_payload.gh-repository-name }}/pulls \
               -d '{
                 "title": "Automated Pull Request",
-                "head": "feature/KAN-45",
+                "head": "feature/${{ github.event.client_payload.jira-issue-id }}",
                 "base": "main",
                 "body": "This pull request contains automated changes."
               }')
@@ -59,31 +60,15 @@ jobs:
 
 
 
-
-    #   - name: Checkout repository
-    #     uses: actions/checkout@v4
-    #     with:
-    #         repository: gianfra901/app1-application
-    #         ref: main
-
-    #   - name: Fetch all branches and PRs
-    #     run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pull/*/head
-      
-    #   - name: Checkout PR branch
-    #     run: git checkout origin/pull/14/head
-
-
-
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-            repository: gianfra901/app1-application
+            repository: gianfra901/${{ github.event.client_payload.gh-repository-name }}
             ref: main
             token: ${{ secrets.GH_TOKEN_USER }}        
   
       - name: Fetch all branches
-        run: git fetch https://${{ secrets.GH_TOKEN_USER }}@github.com/gianfra901/app1-application.git +refs/pull/*/head:refs/remotes/origin/pull/*/head
+        run: git fetch https://${{ secrets.GH_TOKEN_USER }}@github.com/gianfra901/${{ github.event.client_payload.gh-repository-name }}.git +refs/pull/*/head:refs/remotes/origin/pull/*/head
         
   
       - name: Checkout PR branch
@@ -95,91 +80,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"         
-          git checkout -b feature/KAN-45 origin/main
+          git checkout -b feature/${{ github.event.client_payload.jira-issue-id }} origin/main
           git merge --allow-unrelated-histories --strategy-option theirs origin/pull/${{ steps.create_pr.outputs.pr_number }}/head
   
       - name: Force push to main
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
         run: |
-          git push https://$GITHUB_TOKEN@github.com/gianfra901/app1-application feature/KAN-45:main --force        
-
-    #   - name: Force merge PR to main
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
-    #       REPO_OWNER: gianfra901
-    #       REPO_NAME: app1-application
-    #       PR_NUMBER: 15
-    #     run: |
-    #       # Obtener la información del PR
-    #       pr_data=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-    #         "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER")
-  
-    #       # Obtener la rama de la cabeza del PR
-    #       head_branch=$(echo "$pr_data" | jq -r .head.ref)
-  
-    #       # Realizar el merge
-    #       merge_response=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
-    #         -d "{\"base\":\"main\",\"head\":\"$head_branch\",\"commit_message\":\"Force merge PR #$PR_NUMBER to main\"}" \
-    #         "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/merges")
-  
-    #       # Verificar el resultado del merge
-    #       if echo "$merge_response" | grep -q '"sha":'; then
-    #         echo "Successfully merged PR #$PR_NUMBER to main."
-    #       else
-    #         echo "Failed to merge PR #$PR_NUMBER. Response: $merge_response"
-    #         exit 1
-    #       fi        
-
-    #   - name: Force merge PR to main
-    #     run: |
-    #         git checkout main
-    #         git config --global user.name "github-actions[bot]"
-    #         git config --global user.email "github-actions[bot]@users.noreply.github.com"            
-    #         git merge --allow-unrelated-histories --strategy-option theirs origin/pull/14/head
-    #         git push origin main
-    #         token: ${{ secrets.GH_TOKEN_USER }}
-          
-    #   - name: Force Merge Branch
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
-    #     run: |
-    #       curl -X PUT \
-    #         -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
-    #         -H "Accept: application/vnd.github.v3+json" \
-    #         -d '{"base":"'main'","head":"'feature/KAN-45'","commit_message":"Force merge from feature/KAN-45 to MAIN"}' \
-    #         https://api.github.com/repos/gianfra901/app1-application/merges          
-
-    #   - name: Merge Branch
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
-    #     run: |
-    #       cd app1-application
-    #       ls -a
-    #       git config --global user.name "github-actions[bot]"
-    #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-    #       git merge origin/feature/KAN-45  # Replace with your source branch name
-    #       git push origin main # Replace with your target branch name      
-
-    #   - name: Install GitHub CLI
-    #     run: |
-    #       sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C99B11DEB97541F0
-    #       sudo apt-add-repository https://cli.github.com/packages
-    #       sudo apt update
-    #       sudo apt install gh         
-
-
-    #   - name: Create Pull Request
-    #     run: |
-    #       gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-    #       gh pr create --repo gianfra901/app1-application --title "Automated Changes" --body "This pull request contains automated changes." --head feature/KAN-45 --base main
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    #   - name: Merge Pull Request
-    #     run: |
-    #       PR_NUMBER=$(gh pr list --repo gianfra901/app1-application --head feature/KAN-45 --json number --jq '.[0].number')
-    #       gh pr merge $PR_NUMBER --merge
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://$GITHUB_TOKEN@github.com/gianfra901/${{ github.event.client_payload.gh-repository-name }} feature/${{ github.event.client_payload.jira-issue-id }}:main --force        
