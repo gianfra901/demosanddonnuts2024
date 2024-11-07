@@ -75,7 +75,7 @@ jobs:
       jira-issue: ${{ inputs.jira-issue }}
       jira-state-transition: "Listo"
   jira-attach:
-    # needs: jira
+    needs: jira
     uses: ./.github/workflows/jira-attachment.yml
     secrets: inherit
     with:
