@@ -1,4 +1,4 @@
-name: Copy Template to Ticket Branch
+name: Copy Files Template to Ticket Branch
 
 on:
     repository_dispatch:
@@ -13,19 +13,23 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: gianfra901/automate-templates
-        ref: feature/certificate-app-services  # Cambia 'main' por la rama de origen
+        ref: feature/certificate-app-services
 
     - name: Copy files
       run: |
         mkdir copied-files
-        cp -R /* copied-files/  # Cambia 'path/to/files/' por la ruta de los archivos que quieres copiar
+        cp -R * copied-files/
 
     - name: Checkout target repository
       uses: actions/checkout@v4
       with:
         repository: gianfra901/app1-application
         token: ${{ secrets.GITHUB_TOKEN }}
-        ref: feature/${{ github.event.client_payload.jira-issue-id }}  # Cambia 'main' por la rama de destino
+        ref: main  # Usamos 'main' temporalmente para crear la nueva rama
+
+    - name: Create new branch
+      run: |
+        git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
 
     - name: Copy files to target repository
       run: |
@@ -33,5 +37,5 @@ jobs:
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
         git add .
-        git commit -m 'Copy files from source repository'
-        git push origin feature/${{ github.event.client_payload.jira-issue-id }}  # Cambia 'main' por la rama de destino
+        git commit -m 'Copy files from automate-templates:feature/certificate-app-services'
+        git push origin feature/${{ github.event.client_payload.jira-issue-id }}
