@@ -26,7 +26,7 @@ jobs:
       with:
         repository: gianfra901/app1-application
         token: ${{ secrets.GITHUB_TOKEN }}
-        ref: main  # Usamos 'main' temporalmente para crear la nueva rama
+        ref: master  # Usamos 'main' temporalmente para crear la nueva rama
 
     - name: Create new branch
       run: |
