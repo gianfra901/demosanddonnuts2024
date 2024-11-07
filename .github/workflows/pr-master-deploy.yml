@@ -34,24 +34,50 @@ jobs:
     #     env:
     #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
-      - name: Install GitHub CLI
-        run: |
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C99B11DEB97541F0
-          sudo apt-add-repository https://cli.github.com/packages
-          sudo apt update
-          sudo apt install gh         
-
 
       - name: Create Pull Request
         run: |
-          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-          gh pr create --repo gianfra901/app1-application --title "Automated Changes" --body "This pull request contains automated changes." --head feature/KAN-45 --base main
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/gianfra901/app1-application/pulls \
+            -d '{
+              "title": "Automated Pull Request",
+              "head": "feature/KAN-45",
+              "base": "main",
+              "body": "This pull request contains automated changes."
+            }'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
 
-      - name: Merge Pull Request
-        run: |
-          PR_NUMBER=$(gh pr list --repo gianfra901/app1-application --head feature/KAN-45 --json number --jq '.[0].number')
-          gh pr merge $PR_NUMBER --merge
+      - name: Merge Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout main  # Replace with your target branch name
+          git merge origin/feature/KAN-45  # Replace with your source branch name
+          git push origin main # Replace with your target branch name      
+
+    #   - name: Install GitHub CLI
+    #     run: |
+    #       sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C99B11DEB97541F0
+    #       sudo apt-add-repository https://cli.github.com/packages
+    #       sudo apt update
+    #       sudo apt install gh         
+
+
+    #   - name: Create Pull Request
+    #     run: |
+    #       gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+    #       gh pr create --repo gianfra901/app1-application --title "Automated Changes" --body "This pull request contains automated changes." --head feature/KAN-45 --base main
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    #   - name: Merge Pull Request
+    #     run: |
+    #       PR_NUMBER=$(gh pr list --repo gianfra901/app1-application --head feature/KAN-45 --json number --jq '.[0].number')
+    #       gh pr merge $PR_NUMBER --merge
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
