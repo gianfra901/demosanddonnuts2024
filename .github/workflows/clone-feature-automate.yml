@@ -21,13 +21,16 @@ jobs:
       - name: Create new branch in target repository
         run: |
           git clone -b feature/certificate-app-services --single-branch https://github.com/gianfra901/automate-templates.git
+          cd automate-templates
+          ls
+          cd ..
           cd ${{ github.event.client_payload.gh-repository-name }}
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
           sleep 5
           rm -rf ./*
-          
+          rm -rf .github
           cd ..
           cd automate-templates
           cp -rf ./* ../${{ github.event.client_payload.gh-repository-name }}
