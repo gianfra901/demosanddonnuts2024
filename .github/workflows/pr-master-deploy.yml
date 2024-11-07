@@ -3,6 +3,9 @@ name: Delete Files in Master
 on:
     workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   delete-files:
     runs-on: ubuntu-latest
@@ -81,14 +84,14 @@ jobs:
       - name: Checkout PR branch
         run: |
           ls
-          git checkout origin/pull/25/head
+          git checkout origin/pull/26/head
   
       - name: Create temporary merge branch
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"         
           git checkout -b feature/KAN-45 origin/main
-          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/25/head
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/26/head
   
       - name: Force push to main
         env:
