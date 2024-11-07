@@ -80,12 +80,14 @@ jobs:
         run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pull/*/head
   
       - name: Checkout PR branch
-        run: git checkout origin/pull/16/head
+        run: |
+          cd app1-application
+          git checkout origin/pull/17/head
   
       - name: Create temporary merge branch
         run: |
           git checkout -b feature/KAN-45 origin/main
-          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/16/head
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/17/head
   
       - name: Force push to main
         env:
