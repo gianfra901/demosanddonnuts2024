@@ -25,14 +25,16 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
+          sleep 5
           rm -rf ./*
+          rm -rf .github
           cd ..
           cd automate-templates
           cp -rf ./* ../${{ github.event.client_payload.gh-repository-name }}
           cd ..
           cd ${{ github.event.client_payload.gh-repository-name }}
           git add .
-          git commit -m 'clean files'
+          git commit -m 'Load template automation'
           git push origin feature/${{ github.event.client_payload.jira-issue-id }}
 
         env:
