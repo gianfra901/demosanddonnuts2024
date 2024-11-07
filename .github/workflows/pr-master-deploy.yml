@@ -74,23 +74,18 @@ jobs:
             repository: gianfra901/app1-application
             ref: main        
   
-      - name: Set up Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-  
       - name: Fetch all branches
         run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pull/*/head
   
       - name: Checkout PR branch
         run: |
           ls
-          git checkout origin/pull/22/head
+          git checkout origin/pull/23/head
   
       - name: Create temporary merge branch
         run: |
           git checkout -b feature/KAN-45 origin/main
-          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/22/head
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/23/head
   
       - name: Force push to main
         env:
