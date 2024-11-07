@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'gianfra901/demosanddonnuts2024'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_USER }}
           path: demosanddonnuts2024
 
       - name: Create new branch in target repository
@@ -26,4 +26,4 @@ jobs:
           git checkout -b new-branch-name
           git push origin new-branch-name
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
