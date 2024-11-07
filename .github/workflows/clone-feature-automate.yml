@@ -11,17 +11,6 @@ jobs:
       - name: Checkout this repository
         uses: actions/checkout@v4
 
-      - name: Checkout source repository
-        uses: actions/checkout@v4
-        with:
-            repository: gianfra901/automate-templates
-            ref: feature/certificate-app-services
-    
-      - name: Copy files
-        run: |
-            rsync -av --progress . ../temp-dir --exclude .git --exclude ../temp-dir          
-
-
       - name: Checkout target repository
         uses: actions/checkout@v4
         with:
@@ -31,16 +20,21 @@ jobs:
 
       - name: Create new branch in target repository
         run: |
+          git clone -b feature/certificate-app-services --single-branch https://github.com/gianfra901/automate-templates.git
+          cd automate-templates
           cd ${{ github.event.client_payload.gh-repository-name }}
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
           rm -rf ./*
-          rsync -av --progress ../temp-dir/ .
+          cd ..
+          cd automate-templates
+          cp -rf ./* ../${{ github.event.client_payload.gh-repository-name }}
+          cd ..
+          cd ${{ github.event.client_payload.gh-repository-name }}
           git add .
           git commit -m 'clean files'
           git push origin feature/${{ github.event.client_payload.jira-issue-id }}
 
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}            
-      
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
