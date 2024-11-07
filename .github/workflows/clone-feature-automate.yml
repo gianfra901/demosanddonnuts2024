@@ -19,7 +19,7 @@ jobs:
     - name: Copy files
       run: |
         mkdir temp-dir
-        cp -r * temp-dir/
+        rsync -Rr * temp-dir/
 
     - name: Checkout target repository
       uses: actions/checkout@v4
