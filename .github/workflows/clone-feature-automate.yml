@@ -15,6 +15,15 @@ jobs:
           repository: gianfra901/automate-templates
           ref: feature/certificate-app-services
 
+      - name: Create branch in destination repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git clone https://github.com/gianfra901/app1-application.git
+          cd app1-application
+          git checkout -b feature/${{ github.event.client_payload.jira-issue-id }}
+          git push origin feature/${{ github.event.client_payload.jira-issue-id }}
+
       - name: Push to destination repository
         env:
           DESTINATION_REPO: https://github.com/gianfra901/app1-application.git
