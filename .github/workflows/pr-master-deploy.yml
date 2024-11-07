@@ -50,17 +50,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}    
 
-      - name: Merge Branch
+
+      - name: Force Merge Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
         run: |
-          cd app1-application
-          ls -a
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout main  # Replace with your target branch name
-          git merge origin/feature/KAN-45  # Replace with your source branch name
-          git push origin main # Replace with your target branch name      
+          curl -X PUT \
+            -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"base":"'main'","head":"'feature/KAN-45'","commit_message":"Force merge from feature/KAN-45 to MAIN"}' \
+            https://api.github.com/repos/app1-application/merges          
+
+    #   - name: Merge Branch
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+    #     run: |
+    #       cd app1-application
+    #       ls -a
+    #       git config --global user.name "github-actions[bot]"
+    #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+    #       git merge origin/feature/KAN-45  # Replace with your source branch name
+    #       git push origin main # Replace with your target branch name      
 
     #   - name: Install GitHub CLI
     #     run: |
