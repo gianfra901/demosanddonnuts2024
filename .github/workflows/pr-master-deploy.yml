@@ -25,33 +25,37 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
-    #   - name: Commit changes
-    #     run: |
-    #       cd app1-application
-    #       ls -a
-    #       git config --global user.name 'github-actions[bot]'
-    #       git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-    #       git add .
-    #       git commit -m "Delete all files in main"
-    #       git push origin main
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+      - name: Commit changes Delete Main
+        run: |
+          cd app1-application
+          ls -a
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Delete all files in main"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
 
 
       - name: Create Pull Request
+        id: create_pr
         run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/gianfra901/app1-application/pulls \
-            -d '{
-              "title": "Automated Pull Request",
-              "head": "feature/KAN-45",
-              "base": "main",
-              "body": "This pull request contains automated changes."
-            }'
+            response=$(curl -s -X POST \
+              -H "Authorization: token ${{ secrets.GH_TOKEN_USER }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/gianfra901/app1-application/pulls \
+              -d '{
+                "title": "Automated Pull Request",
+                "head": "feature/KAN-45",
+                "base": "main",
+                "body": "This pull request contains automated changes."
+              }')
+            echo "Response: $response"
+            pr_number=$(echo "$response" | jq -r '.number')
+            echo "::set-output name=pr_number::$pr_number"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}    
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }} 
 
 
 
@@ -85,14 +89,14 @@ jobs:
       - name: Checkout PR branch
         run: |
           ls
-          git checkout origin/pull/27/head
+          git checkout origin/pull/${{ steps.create_pr.outputs.pr_number }}/head
   
       - name: Create temporary merge branch
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"         
           git checkout -b feature/KAN-45 origin/main
-          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/27/head
+          git merge --allow-unrelated-histories --strategy-option theirs origin/pull/${{ steps.create_pr.outputs.pr_number }}/head
   
       - name: Force push to main
         env:
