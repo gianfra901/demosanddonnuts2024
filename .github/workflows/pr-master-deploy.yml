@@ -18,7 +18,7 @@ jobs:
         run: |
           rm -rf ./*
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes
         run: |
@@ -28,4 +28,4 @@ jobs:
           git commit -m "Delete all files in master"
           git push origin master
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
